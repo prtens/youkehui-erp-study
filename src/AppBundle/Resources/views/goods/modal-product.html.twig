@@ -1,0 +1,108 @@
+{% extends 'modal-base.html.twig' %}
+
+{% set modal_class = 'modal-lg' %}
+
+{% do css(['libs/select2.css']) %}
+{% do script(['libs/jquery-validation.js', 'libs/select2.js', 'libs/jquery-form.js', 'app/goods/modal-product.js']) %}
+
+{% block title %}
+  {% if goods.id == 0 %}
+    新增产品
+  {% else %}
+    编辑产品
+  {% endif %}
+{% endblock %}
+
+{% block body %}
+<form id="goods-form" class="form-horizontal"
+  {% if goods.id == 0 %}
+    action="{{ path('goods_create') }}"
+  {% else %}
+    action="{{ path('goods_edit', {id: goods.id}) }}"
+  {% endif %}
+  method="post" enctype="multipart/form-data">
+  <div class="form-group">
+    <label class="control-label col-md-2">分类<span class="text-danger">&nbsp;*</span></label>
+    <div class="col-md-4">
+      <select class="form-control" name="category_id" >
+        {{ select_options(data('category_choices', {group_code: goods.group_code, owner_id: app.user.getParentId()}), goods.category_id, '全部分类') }}
+      </select>
+    </div>
+
+    <label class="control-label col-md-2">供应商<span class="text-danger">&nbsp;*</span></label>
+    <div class="col-md-3">
+      <input id="modal-provider-id" class="form-control" type="text" name="provider_id" value="{{ goods.provider_id ? : '' }}" placeholder="搜索供应商" data-url="{{ path('user_ajax_search', {type: 'provider'}) }}">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-2">产品名称<span class="text-danger">&nbsp;*</span></label>
+    <div class="col-md-9">
+      <input class="form-control" type="text" name="name" value="{{ goods.name }}">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-2">规格<span class="text-danger">&nbsp;*</span></label>
+    <div class="col-md-4">
+      <input class="form-control"  type="text" name="spec" value="{{ goods.spec }}">
+    </div>
+
+    <label class="control-label col-md-1">单位<span class="text-danger">&nbsp;*</span></label>
+    <div class="col-md-4">
+      <input class="form-control"  type="text" name="unit" value="{{ goods.unit }}">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label col-md-2">零售价<span class="text-danger">&nbsp;*</span></label>
+    <div class="col-md-9">
+      <input class="form-control" type="text" name="sale_price" value="{{ goods.sale_price }}">
+    </div>
+  </div>
+
+  {% if goods.id == 0 %}
+    <div class="form-group">
+      <label class="control-label col-md-2">成本价<span class="text-danger">&nbsp;*</span></label>
+      <div class="col-md-9">
+        <input class="form-control" type="text" name="cost_price" value="{{ goods.cost_price }}">
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="form-group">
+    <label class="control-label col-md-2">下限预警<span class="text-danger">&nbsp;*</span></label>
+    <div class="col-md-9">
+      <input class="form-control" type="text" name="min_amount" value="{{ goods.min_amount }}">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label col-md-2">材料组成</label>
+    <div class="col-md-9">
+      <input class="form-control" type="text" name="ingredient" value="{{ goods.ingredient }}">
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label class="control-label col-md-2">备注</label>
+    <div class="col-md-9">
+      <textarea class="form-control" name="about">{{ goods.about }}</textarea>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-2">产品图片</label>
+    <div class="col-md-9">
+      <input type="file" name="cover_image" class="form-control" accept="image/png,image/gif,image/jpeg">
+    </div>
+  </div>
+  <input type="hidden" class="form-control" name="group_code" value="{{ goods.group_code }}">
+  {{ form_csrf_token() }}
+</form>
+{% endblock %}
+
+{% block footer %}
+  <button type="button" class="btn btn-default " data-dismiss="modal">关闭</button>
+  <a id="goods-create-btn" class="btn btn-primary" data-toggle="form-submit"
+     data-target="#goods-form" data-loading-text="正在提交">
+    保存
+  </a>
+{% endblock %}

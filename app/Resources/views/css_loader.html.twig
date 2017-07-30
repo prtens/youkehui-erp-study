@@ -1,0 +1,7 @@
+{% for path in css() %}
+  {% if '//' in path %}
+    <link href="{{ path ~ '?' ~ asset_version('')}}" rel="stylesheet" />
+  {% else %}
+    <link href="{{ asset('static/' ~ path) }}" rel="stylesheet" />
+  {% endif %}
+{% endfor %}

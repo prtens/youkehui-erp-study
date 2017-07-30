@@ -1,0 +1,41 @@
+{% if regions is not empty %}
+  {{ _self.show_region_tree(regions, false) }}
+{% else %}
+  <ul class="row empty">暂无区域记录</ul>
+{% endif %}
+
+{% macro show_region_tree(regions, is_collapse_children) %}
+  <ul class="list-table sortable-list" data-group-id="{{ regions[0]['parent_id'] }}">
+    {% for region in regions %}
+      {% set is_parent = region.children|default(null) is not empty %}
+      {% set is_root = region.depth == 1 %}
+      <li id="{{ region.id }}" class="tr" data-name="{{ region.name }}" data-id="{{ region.id }}" data-parent-id="{{ region.parent_id }}" style="display: {{ (not is_root and is_collapse_children) ? 'none' : 'block' }}">
+        <div class="row{{ (is_parent and is_collapse_children) ? ' row-collapse' : ' row-expand' }}">
+          <div class="td col-md-6 name sort-handle" style="padding-left: {{ 24 * (region.depth - 1 ) }}px; overflow: hidden">
+            {% if is_parent %}
+              <i class="list-table-tree-icon glyphicon glyphicon-chevron-{{ is_collapse_children ? 'right' : 'down' }}"></i>
+            {% else %}
+              <i class="list-table-tree-icon"></i>
+            {% endif %}
+            {{ region.name }}
+          </div>
+          <div class="td col-md-4 operation">
+            <a href="javascript:;" class="btn btn-default btn-sm " data-url="{{ path('admin_region_edit', {'id': region.id}) }}" data-toggle="modal" data-target="#modal">
+              <i class="glyphicon glyphicon-edit"></i> 编辑
+            </a>
+            {% if region.depth == 1 %}
+                <a href="javascript:;" class="btn btn-default btn-sm" data-url="{{ path('admin_region_create', {'parent_id': region.id}) }}" data-toggle="modal" data-target="#modal"><i class="glyphicon glyphicon-plus"></i> 新增子区域</a>
+            {% endif %}
+            {% if not is_parent %}
+                <a href="javascript:;" class="btn btn-default btn-sm" data-toggle="item-delete" data-name="{{ region.name }}" data-url="{{ path('admin_region_delete', {'id': region.id}) }}"><i class="glyphicon glyphicon-trash"></i> 删除
+                </a>
+            {% endif %}
+          </div>
+        </div>
+        {% if is_parent %}
+          {{ _self.show_region_tree(region.children, is_collapse_children) }}
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endmacro %}

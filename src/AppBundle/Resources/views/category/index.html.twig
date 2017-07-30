@@ -1,0 +1,37 @@
+{% extends 'AppBundle::layout.html.twig' %}
+{% block title %}分类管理 - {{ parent() }}{% endblock %}
+
+{% do script(['app/category/index.js']) %}
+
+{% set main_nav = 'stock_manage' %}
+{% set sub_nav = 'goods_category' %}
+
+{% block content %}
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li {% if group_code == 'product' %}class="active"{% endif %}><a href="{{ path('goods_category', {groupCode: 'product'}) }}">{{ dict('group_code', 'product') }}分类</a></li>
+      <li {% if group_code == 'facility' %}class="active"{% endif %}><a href="{{ path('goods_category', {groupCode: 'facility'}) }}">{{ dict('group_code', 'facility') }}分类</a></li>
+      <li class="pull-right">
+        <div class="nav-tools">
+          <a href="javascript:;" class="btn btn-primary btn-sm " data-url="{{ path('goods_category_create', {'group_code': group_code}) }}" data-toggle="modal" data-target="#modal">
+            <i class="glyphicon glyphicon-plus"></i> 新增分类
+          </a>
+        </div>
+      </li>
+    </ul>
+  
+    <div class="tab-content">
+      <ul class="list-table" id="category-table" style="margin-bottom: 0">
+        <li class="th">
+          <div class="row">
+            <div class="td col-md-6">名称</div>
+            <div class="td col-md-4">操作</div>
+          </div>
+        </li>
+        <li id="category-table-body" class="tbody">
+        {% include 'AppBundle:category:tbody.html.twig' %}
+        </li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}

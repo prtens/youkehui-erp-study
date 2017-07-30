@@ -1,0 +1,203 @@
+dashboard:
+    path: /
+    defaults: { _controller: AppBundle:Default:dashboard }
+
+login:
+    path:      /login
+    defaults:  { _controller: AppBundle:Login:index }
+
+login_check:
+    path: /login_check
+
+logout:
+    path: /logout
+
+goods_category:
+    path: goods_category/group/{groupCode}
+    defaults: { _controller: AppBundle:Category:index }
+
+goods_category_create:
+    path: goods_category/create
+    defaults: { _controller: AppBundle:Category:create }
+
+goods_category_edit:
+    path: goods_category/{id}/edit
+    defaults: { _controller: AppBundle:Category:edit }
+
+goods_category_delete:
+    path: goods_category/{id}/delete
+    defaults: { _controller: AppBundle:Category:delete }
+    methods: [POST]
+
+
+goods:
+  path: goods/group/{groupCode}
+  defaults: { _controller: AppBundle:Goods:index }
+
+goods_show:
+  path: goods/{id}/show
+  defaults: { _controller: AppBundle:Goods:show }
+
+goods_delete:
+  path: goods/{id}/delete
+  defaults: { _controller: AppBundle:Goods:delete }
+  
+goods_batch_delete:
+  path: goods/batch_delete
+  defaults: { _controller: AppBundle:Goods:batchDelete }
+
+goods_edit:
+  path: goods/{id}/edit
+  defaults: { _controller: AppBundle:Goods:edit }
+
+goods_create:
+  path: goods/create
+  defaults: { _controller: AppBundle:Goods:create }
+
+goods_trash:
+  path: goods/trash/{groupCode}
+  defaults: { _controller: AppBundle:Goods:trash }
+
+goods_undelete:
+  path: goods/{id}/undelete
+  defaults: { _controller: AppBundle:Goods:undelete }
+
+goods_true_delete:
+  path: goods/{id}/true_delete
+  defaults: { _controller: AppBundle:Goods:trueDelete }
+  
+user_ajax_search:
+  path: user/ajax_search
+  defaults: { _controller: AppBundle:User:ajaxSearch }
+
+
+stock_todo_goods:
+  path: stock_todo/goods
+  defaults: { _controller: AppBundle:StockTodo:goods }
+
+stock_todo_goods_set:
+  path: stock_todo/goods-set
+  defaults: { _controller: AppBundle:StockTodo:goodsSet }
+
+stock_todo_add:
+  path: stock_todo/add
+  defaults: { _controller: AppBundle:StockTodo:add }
+  methods: [POST]
+
+stock_todo_delete:
+  path: stock_todo/{id}/delete
+  defaults: { _controller: AppBundle:StockTodo:delete }
+  methods: [POST]
+
+goods_ajax_search:
+  path: goods/ajax_search
+  defaults: { _controller: AppBundle:Goods:ajaxSearch }
+
+stock:
+  path: stock
+  defaults: { _controller: AppBundle:Stock:index }
+
+stock_create:
+  path: stock/create
+  defaults: { _controller: AppBundle:Stock:create }
+
+stock_edit:
+  path: stock/{id}/edit
+  defaults: { _controller: AppBundle:Stock:edit }
+  
+stock_record_create:
+  path: stock_record/create/type/{type}
+  defaults: { _controller: AppBundle:Stock:createRecord }
+
+stock_record_show:
+  path: stock_record/{goodsId}/show
+  defaults: { _controller: AppBundle:Stock:showRecord }
+
+stock_ajax_goods_search:
+  path: stock/ajax_goods_search
+  defaults: { _controller: AppBundle:Stock:ajaxGoodsSearch }
+
+user_type:
+  path: user/type/{type}
+  defaults: { _controller: AppBundle:User:index }
+  
+user_create:
+  path: user/create/
+  defaults: { _controller: AppBundle:User:create }
+
+user_edit:
+  path: user/{id}/edit
+  defaults: { _controller: AppBundle:User:edit }
+
+user_delete:
+  path: user/{id}/delete
+  defaults: { _controller: AppBundle:User:delete }
+  methods: [POST]
+
+user_batch_delete:
+  path: user/batch_delete
+  defaults: { _controller: AppBundle:User:batchDelete }
+
+user_validate_nickname:
+  path: user/validate_nickname
+  defaults: { _controller: AppBundle:User:validateNickname }
+  methods: [POST]
+  
+subuser_validate_nickname:
+  path: user/subuser_validate_nickname
+  defaults: { _controller: AppBundle:User:subuserValidateNickname }
+  methods: [POST]
+
+user_validate_mobile:
+  path: user/validate_mobile
+  defaults: { _controller: AppBundle:User:validateMobile }
+  methods: [POST]
+
+user_validate_email:
+  path: user/validate_email
+  defaults: { _controller: AppBundle:User:validateEmail }
+  methods: [POST]
+
+user_enable:
+  path: user/{id}/enable
+  defaults: { _controller: AppBundle:User:enable }
+  methods: [POST]
+
+user_disable:
+  path: user/{id}/disable
+  defaults: { _controller: AppBundle:User:disable }
+  methods: [POST]
+
+user_batch_disable:
+  path: user/batch_disable
+  defaults: { _controller: AppBundle:User:batchDisable }
+
+user_password_change:
+  path: user/{id}/change_password
+  defaults: { _controller: AppBundle:User:changePassword }
+
+role:
+  path: role
+  defaults: { _controller: AppBundle:Role:index }
+
+role_create:
+  path: role/create
+  defaults: { _controller: AppBundle:Role:create }
+
+role_edit:
+  path: role/{id}/edit
+  defaults: { _controller: AppBundle:Role:edit }
+
+role_delete:
+  path: role/{id}/delete
+  defaults: { _controller: AppBundle:Role:delete }
+
+role_validate_code:
+  path: role/validate_code
+  defaults: { _controller: AppBundle:Role:validateCode }
+  methods: [POST]
+  
+role_validate_name:
+  path: role/validate_name
+  defaults: { _controller: AppBundle:Role:validateName }
+  methods: [POST]

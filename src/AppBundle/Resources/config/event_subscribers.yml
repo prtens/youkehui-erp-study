@@ -1,0 +1,21 @@
+services:
+    stock_event_subscriber:
+        class: Biz\Stock\Event\StockEventSubscriber
+        calls:
+            - [setBiz, ['@biz']]
+        tags:
+            - { name: biz.event.subscriber }
+            
+    user_event_subscriber:
+        class: Biz\User\Event\UserEventSubscriber
+        calls:
+            - [setBiz, ['@biz']]
+        tags:
+            - { name: biz.event.subscriber }
+            
+    goods_event_subscriber:
+        class: Biz\Goods\Event\GoodsEventSubscriber
+        calls:
+            - [setBiz, ['@biz']]
+        tags:
+            - { name: biz.event.subscriber }

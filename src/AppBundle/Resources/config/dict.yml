@@ -1,0 +1,9 @@
+group_code:
+    product: 产品
+    facility: 设备
+  
+user_locked:
+    0: 启用
+    1: 禁用
+
+

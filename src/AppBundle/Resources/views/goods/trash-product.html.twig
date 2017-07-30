@@ -1,0 +1,97 @@
+{% extends 'AppBundle::layout.html.twig' %}
+{% block title %}产品回收站 - {{ parent() }}{% endblock %}
+
+{% set main_nav = 'stock_manage' %}
+{% set sub_nav = 'goods_trash' %}
+
+{% do css(['libs/select2.css']) %}
+{% do script(['libs/select2.js', 'app/goods/trash-product.js',]) %}
+
+{% block header %}
+
+{% endblock %}
+
+{% block box_title %}产品回收站{% endblock %}
+
+{% block box_tools %}
+  <a href="javascript:history.back();" class="btn btn-primary btn-sm">
+    <i class="glyphicon glyphicon-arrow-left"></i> &nbsp;返回
+  </a>
+{% endblock %}
+
+{% block box_body %}
+  <div class="row mbm">
+    <div class="col-md-12">
+      <form id="goods-search-form" class="form-inline" method="get">
+        <div class="form-group">
+          <input class="form-control input-sm" name="name" type="text" value="{{ app.request.get('name') }}" placeholder="产品名称">
+        </div>
+        <div class="form-group">
+          <select class="form-control input-sm" name="category_id">
+            {{ select_options(data('category_choices', {group_code: 'product', owner_id: app.user.getParentId()}), app.request.query.get('category_id'), '全部分类') }}
+          </select>
+        </div>
+        <div class="form-group">
+          <input id="provider-id" class="form-control input-sm" type="text" name="provider_id" value="{{ app.request.get('provider_id') }}" placeholder="搜索供应商" data-url="{{ path('user_ajax_search', {type: 'provider'}) }}" style="width:150px">
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary btn-sm" type="submit">
+            <i class="glyphicon glyphicon-search"></i> 搜索
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table id="goods-table" class="table table-striped table-hover" style="word-break:break-all;">
+        <thead>
+        <tr>
+          <th width="5%">图片</th>
+          <th width="10%">产品名称</th>
+          <th width="8%">分类</th>
+          <th width="10%">供应商</th>
+          <th width="10%">加盟商</th>
+          <th width="5%">规格</th>
+          <th width="5%">单位</th>
+          <th width="6%">零售价</th>
+          <th width="6%">成本价</th>
+          <th width="8%">材料组成</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for goods in deleted_goods %}
+          <tr>
+            {% set category = categories[goods.category_id] %}
+            {% set provider = providers[goods.provider_id]|default(null) %}
+            {% set alias = aliases[goods.owner_id] %}
+            <td><img src="{{ filepath(goods.small_picture) }}" style="height:25px"></td>
+            <td><a href="javascript:;" data-url="{{ path('goods_show' , {id:goods.id}) }}" data-role="edit" data-toggle="modal" data-target="#modal">{{ goods.name }}</a> </td>
+            <td>{{ category.name }}</td>
+            <td>{{ provider.nickname|default('-') }}</td>
+            <td>{{ alias.nickname }}</td>
+            <td>{{ goods.spec }}</td>
+            <td>{{ goods.unit }}</td>
+            <td>{{ goods.sale_price }}</td>
+            <td>{{ goods.cost_price }}</td>
+            <td>{{ goods.ingredient }}</td>
+            <td width="15%">
+              <a href="javascript:;" class="btn btn-default btn-sm" data-name="{{ goods.name }}" data-url="{{ path('goods_undelete', {id:goods.id}) }}" data-role="undelete">
+                还原
+              </a>
+              <a href="javascript:;" class="btn btn-danger btn-sm" data-name="{{ goods.name }}" data-url="{{ path('goods_true_delete', {id:goods.id}) }}" data-role="true-delete">
+               彻底删除
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+        {% if deleted_goods is empty %}
+          <tr><td colspan="11" class="row empty">暂无产品记录</td></tr>
+        {% endif %}
+        <tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}
+{% block box_footer %}{{ app_macro.table_paginator(paginator) }}{% endblock %}

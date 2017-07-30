@@ -1,0 +1,95 @@
+{% extends 'modal-base.html.twig' %}
+
+{% set modal_class = 'modal-lg' %}
+
+{% do script(['libs/jquery-form.js', 'app/stock/modal-record.js']) %}
+
+{% block title %}
+    {% if type == 'in' %}
+      入库单
+    {% elseif type == 'out' %}
+      出库单
+    {% elseif type == 'loss' %}
+      报损单
+    {% elseif type == 'gain' %}
+      报溢单
+    {% elseif type == 'check' %}
+      盘点单
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+
+{% if goods_list %}
+
+  <form id="wave-form" class="form-horizontal" method="post" action="{{ path('stock_record_create', {type: type}) }}">
+    <table id="goods-table" class="table table-striped table-hover" style="word-break:break-all;">
+      <thead>
+        <tr>
+          <th width="10%">类别</th>
+          <th width="30%">名称</th>
+          <th width="10%">供应商</th>
+          <th width="12%">当前库存</th>
+          
+          {% if type == 'in' %}
+          <th width="12%">本次入库数量</th>
+          {#<th width="12%">本次成本价</th>#}
+          {% elseif type == 'out' %}
+          <th width="12%">本次出库数量</th>
+          {% elseif type == 'check' %}
+          <th width="12%">盘点后真实数量</th>
+          {% elseif type == 'loss' %}
+          <th width="12%">报损数量</th>
+          {% elseif type == 'gain' %}
+          <th width="12%">报溢数量</th>
+          {% endif %}
+          
+          <th>备注</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for goods in goods_list %}
+        <tr>
+          {% set category = categories[goods.category_id] %}
+          {% set provider = providers[goods.provider_id]|default(null) %}
+          {% set stock = stocks[goods.id]|default(null) %}
+          <td>{{ dict('group_code',stock.group_code) }}</td>
+          <td>{{ goods.name }}</td>
+          <td>{{ provider.nickname|default('-') }}</td>
+          <td>{{ stock.amount }}</td>
+          <td><input type="text" name="wave_amount[]" value="0" data-type="{{ type }}" data-amount="{{ stock.amount }}"></td>
+
+          {# 暂时不要在入库时输入成本价，成本价在产品新增时填写，以后不修改 #}
+          {#{% if type == 'in' %}
+          <td><input type="text" name="cost_price[]" value="0"></td>
+          {% else %}
+          <input type="hidden" name="cost_price[]" value="{{ goods.cost_price }}">
+          {% endif %}#}
+          
+          <input type="hidden" name="cost_price[]" value="{{ goods.cost_price }}">
+          <td><input type="text" name="remark[]" value="" style="display: inline-block; width:100%"></td>
+        </tr>
+        <input type="hidden" name="goods_id[]" value="{{ goods.id }}">
+        <input type="hidden" name="type[]" value="{{ type }}">
+        {% endfor %}
+      <tbody>
+    </table>
+    {{ form_csrf_token() }}
+  </form>
+
+{% else %}
+  <div class="empty">请先新增商品到待处理列表</div>
+{% endif %}
+{% endblock %}
+
+{% block footer %}
+
+{% if goods_list %}
+  <button type="button" class="btn btn-default " data-dismiss="modal">关闭</button>
+  <a id="goods-create-btn" class="btn btn-primary" data-toggle="form-submit"
+     data-target="#goods-form" data-type="{{ type }}" data-loading-text="正在提交">
+    保存
+  </a>
+{% endif %}
+
+{% endblock %}

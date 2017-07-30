@@ -1,0 +1,23 @@
+admin_system_log:
+  path: system/log
+  defaults: { _controller: AppBundle:Admin/System:log }
+
+admin_user:
+  path: user/type/{type}
+  defaults: { _controller: AppBundle:Admin/User:index }
+
+admin_region:
+  path: region
+  defaults: { _controller: AppBundle:Admin/Region:index }
+
+admin_region_create:
+    path: region/create
+    defaults: { _controller: AppBundle:Admin/Region:create }
+
+admin_region_edit:
+    path: region/{id}/edit
+    defaults: { _controller: AppBundle:Admin/Region:edit }
+
+admin_region_delete:
+    path: region/{id}/delete
+    defaults: { _controller: AppBundle:Admin/Region:delete }

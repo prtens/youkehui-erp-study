@@ -1,0 +1,68 @@
+{% extends 'modal-base.html.twig' %}
+
+{% set modal_class = 'modal-lg' %}
+
+{% do script(['libs/jquery-validation.js', 'app/role/modal.js']) %}
+
+{% block title %}
+  {% if role.id == 0 %}
+    新增角色
+  {% else %}
+    编辑角色
+  {% endif %}
+{% endblock %}
+
+{% block body %}
+<form id="role-form" class="form-horizontal"
+  {% if role.id == 0 %}
+    action="{{ path('role_create') }}"
+  {% else %}
+    action="{{ path('role_edit', {id: role.id}) }}"
+  {% endif %}
+  method="post">
+  <div class="form-group">
+    <label class="control-label col-md-2">角色名称<span class="text-danger">&nbsp;*</span></label>
+    <div class="col-md-9">
+      <input class="form-control" type="text" name="name" value="{{ role.name }}" data-validation="{{ path('role_validate_name', {exclude: role.name}) }}">
+    </div>
+  </div>
+  <div class="form-group">
+    {% set permission_tree = permissions('left_menu') %}
+    <label class="control-label col-md-2">分配权限<span class="text-danger">&nbsp;*</span></label>
+    <div class="col-md-9">
+      
+      {% for main_item in permission_tree %}
+        {% if main_item.id != 'admin_authority' %}
+          {% set has_children = main_item.children is not empty %}
+          <div class="box" style="margin-bottom:10px">
+            <div class="box-header with-border" style="padding: 5px 10px">
+              {{ main_item.name }}
+            </div>
+            {% if has_children %}
+              <div class="box-body">
+              {% for sub_item in main_item.children %}
+                <input name="access_rules[]" type="checkbox" {% if sub_item.path in role.access_rules %}checked{% endif %} value="{{ sub_item.path }}" />
+                <span class="mrm">{{ sub_item.name }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+          
+        {% endif %}
+      {% endfor %}
+      
+    </div>
+  </div>
+  
+
+  {{ form_csrf_token() }}
+</form>
+{% endblock %}
+
+{% block footer %}
+  <button type="button" class="btn btn-default " data-dismiss="modal">关闭</button>
+  <a id="role-create-btn" class="btn btn-primary" data-toggle="form-submit"
+     data-target="#role-form" data-loading-text="正在提交">
+    保存
+  </a>
+{% endblock %}

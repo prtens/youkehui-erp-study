@@ -1,0 +1,46 @@
+{% extends 'modal-base.html.twig' %}
+
+{% do script(['libs/jquery-validation.js', 'app/region/modal.js']) %}
+
+{% block title %}
+  {% if region.id %}
+    编辑区域
+  {% else %}
+    新增区域
+  {% endif %}
+{% endblock %}
+
+{% block body %}
+  
+  <form id="region-form" class="form-horizontal"
+        action="{% if region.id %}{{ path('admin_region_edit', {id:region.id}) }}{% else %}{{ path('admin_region_create') }}{% endif %}"
+        method="post">
+    
+    <div class="form-group">
+      <label class="col-md-2 control-label" for="region-name">名称<span class="text-danger">&nbsp;*</span></label>
+      <div class="col-md-8 controls">
+        <input class="form-control input-sm" id="region-name" type="text" name="name" value="{{ region.name }}">
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="col-md-2 control-label" for="region-seq">显示序号<span class="text-danger">&nbsp;*</span></label>
+      <div class="col-md-8 controls">
+        <input class="form-control input-sm" id="region-seq" type="text" name="seq" value="{{ region.seq }}">
+        <div class="help-block">显示序号需为整数，分类按序号的顺序从大到小排序。</div>
+      </div>
+    </div>
+
+    <input type="hidden" name="parent_id" value="{{ region.parent_id }}">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('app') }}">
+  </form>
+
+{% endblock %}
+
+{% block footer %}
+  <a type="button" class="btn btn-link btn-sm" data-dismiss="modal">取消</a>
+  <a id="region-create-btn" class="btn btn-primary btn-sm" data-toggle="form-submit"
+     data-target="#region-form" data-loading-text="正在提交">
+    保存
+  </a>
+{% endblock %}

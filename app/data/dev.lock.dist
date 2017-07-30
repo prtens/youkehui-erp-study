@@ -1,0 +1,1 @@
+#当远程访问app_dev.php时，需要新增app/data/dev.lock文件

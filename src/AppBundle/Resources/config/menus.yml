@@ -1,0 +1,72 @@
+# 字段如下
+# id （不必填，自动会用节点的key填充）
+# name （*必选）
+# path （可选）
+# icon （可选，有默认值）图标的css类名
+# visable （可选，默认true) 是否显示
+# disable  (可选，默认false）是否禁用，禁用后角色权限不可选，并且不显示
+# parentId （不必填，会自动按照树形结构填充）
+# children （可选）
+
+#以下是默认值，会自动填充节点中可选的字段
+default: 
+    path: /
+    icon: fa fa-circle-o
+    visable: true
+    disable: false
+    children: ~
+
+left_menu: 
+    # dashboard: 
+    #     name: 控制台
+    #     path: /
+    #     icon: fa fa-tachometer
+    stock_manage: 
+        name: 库存管理
+        icon: fa fa-cubes
+        children: 
+            goods_group_product: 
+                name: 产品管理
+                path: /goods/group/product
+            goods_group_facility: 
+                name: 设备管理
+                path: /goods/group/facility
+            stock: 
+                name: 统一库存
+                path: /stock
+            goods_category: 
+                name: 分类管理
+                path: /goods_category/group/product
+    provider_manage: 
+        name: 供应商管理
+        icon: fa fa-shopping-basket
+        children: 
+            user_type_provider: 
+                name: 供应商管理
+                path: /user/type/provider
+    setting_manage: 
+        name: 系统设置
+        icon: fa fa-gear
+        children: 
+            user: 
+                name: 子账号管理
+                path: /user/type/alias-subuser
+            role: 
+                name: 角色权限管理
+                path: /role
+    admin_authority:
+        name: 超管特权
+        icon: fa fa-unlock-alt
+        children:
+            admin_user_provider:
+                name: 所有供应商
+                path: /admin/user/type/provider
+            admin_user_alias:
+                name: 所有加盟商
+                path: /admin/user/type/alias
+            admin_region:
+                name: 区域管理
+                path: /admin/region
+            admin_system_log:
+                name: 系统日志
+                path: /admin/system/log

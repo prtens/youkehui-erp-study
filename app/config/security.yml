@@ -1,0 +1,54 @@
+# To get started with security, check out the documentation:
+# http://symfony.com/doc/current/book/security.html
+parameters:
+    app.current_user.class: Biz\User\CurrentUser
+
+services:
+    app.user_provider:
+        class: Biz\User\UserProvider
+        arguments: ['@service_container']
+
+security:
+
+    # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
+    providers:
+        app:
+            id: app.user_provider
+
+    encoders:
+        "%app.current_user.class%": sha256
+
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        # login_firewall:
+        #     pattern:   ^/login$
+        #     anonymous: ~
+        main:
+            anonymous: ~
+            form_login:
+                login_path: login
+                check_path: login_check
+#                default_target_path: default_security_target
+                use_referer: true
+            remember_me:
+                secret:   '%secret%'
+                lifetime:  8640000
+            logout:
+                path: logout
+            # http://symfony.com/doc/current/book/security.html#a-configuring-how-your-users-will-authenticate
+            # form_login: ~
+            # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
+    
+    role_hierarchy:
+        ROLE_SALESMAN: ROLE_USER
+        ROLE_MANAGER: ROLE_SALESMAN
+        ROLE_ADMIN: ROLE_MANAGER
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+        
+    access_control:
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin, roles: ROLE_SUPER_ADMIN }
+        - { path: ^/, roles: ROLE_USER }

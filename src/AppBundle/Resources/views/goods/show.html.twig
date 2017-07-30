@@ -1,0 +1,85 @@
+{% extends 'modal-base.html.twig' %}
+
+{% block title %}
+  <h4 class="modal-title">
+
+    {% if goods.group_code == 'product' %}
+      产品详情
+    {% else %}
+        设备详情
+    {% endif %}
+  </h4>
+{% endblock %}
+
+{% block body %}
+  <table class="table table-striped table-bordered">
+    <tr>
+      <th width="25%">图片</th>
+      <td width="75%">
+        <img src="{{ filepath(goods.medium_picture) }}" style="width:80px" />
+      </td>
+    </tr>
+    <tr>
+      <th width="25%">产品名称</th>
+      <td width="75%">{{ goods.name }}</td>
+    </tr>
+    <tr>
+      <th width="25%">拼音码</th>
+      <td width="75%">{{ goods.spell_code }}</td>
+    </tr>
+    <tr>
+      <th width="25%">分类</th>
+      <td width="75%">{{ category.name }}</td>
+    </tr>
+    {% if goods.group_code == 'product' %}
+      <tr>
+        <th width="25%">供应商</th>
+        <td width="75%">{{ provider.nickname }}</td>
+      </tr>
+    {% endif %}
+    <tr>
+      <th width="25%">加盟商</th>
+      <td width="75%">{{ alias.nickname }}</td>
+    </tr>
+    <tr>
+      <th width="25%">规格</th>
+      <td width="75%">{{ goods.spec }}</td>
+    </tr>
+    <tr>
+      <th width="25%">单位</th>
+      <td width="75%">{{ goods.unit }}</td>
+    </tr>
+    {% if goods.group_code == 'product' %}
+      <tr>
+        <th width="25%">材料组成</th>
+        <td width="75%">{{ goods.ingredient }}</td>
+      </tr>
+    {% endif %}
+    {% if goods.group_code == 'product' %}
+      <tr>
+        <th width="25%">零售价</th>
+        <td width="75%">{{ goods.sale_price }}</td>
+      </tr>
+    {% endif %}
+    <tr>
+      <th width="25%">成本均价</th>
+      <td width="75%">{{ goods.cost_price }}</td>
+    </tr>
+    <tr>
+      <th width="25%">库存预警下限</th>
+      <td width="75%">{{ stock.min_amount }}</td>
+    </tr>
+    <tr>
+      <th width="25%">库存数量</th>
+      <td width="75%">{{ stock.amount }}</td>
+    </tr>
+    <tr>
+      <th width="25%">备注</th>
+      <td width="75%">{{ goods.about }}</td>
+    </tr>
+  </table>
+{% endblock %}
+
+{% block footer %}
+  <a class="btn btn-default" data-dismiss="modal">关闭</a>
+{% endblock %}

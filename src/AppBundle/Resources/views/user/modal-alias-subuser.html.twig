@@ -1,0 +1,74 @@
+{% extends 'modal-base.html.twig' %}
+
+{% do script(['libs/jquery-validation.js', 'libs/jquery-form.js', 'app/user/modal-alias-subuser.js']) %}
+
+{% block title %}
+  {% if user.id == 0 %}
+    新增子账号
+  {% else %}
+    编辑子账号
+  {% endif %}
+{% endblock %}
+
+{% block body %}
+<form id="alias-subuser-form" class="form-horizontal"
+  {% if user.id == 0 %}
+    action="{{ path('user_create', {type: user.type}) }}"
+  {% else %}
+    action="{{ path('user_edit', {id: user.id }) }}"
+  {% endif %}
+  method="post" enctype="multipart/form-data">
+  <div class="form-group">
+    <label class="control-label col-md-3">子账号名称<span class="text-danger">&nbsp;*</span></label>
+    <div class="col-md-8">
+      <input class="form-control input-sm" type="text" name="nickname" value="{{ user.nickname }}" data-validation="{{ path('subuser_validate_nickname', {exclude: user.nickname}) }}">
+      <div class="help-block">该名称用于登录</div>
+    </div>
+  </div>
+  {% if user.id == 0 %}
+    <div class="form-group">
+      <label class="control-label col-md-3">登录密码<span class="text-danger">&nbsp;*</span></label>
+      <div class="col-md-8">
+        <input id="password" class="form-control input-sm" type="password" name="password" value="">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-md-3">确认密码<span class="text-danger">&nbsp;*</span></label>
+      <div class="col-md-8">
+        <input class="form-control input-sm" type="password" name="password_confirm" value="">
+      </div>
+    </div>
+  {% endif %}
+  <div class="form-group">
+    <label class="control-label col-md-3">角色</label>
+    <div class="col-md-8">
+      <select class="form-control input-sm" name="roles[]">
+        {{ select_options(data('role_choices', {}), user.roles[0]|default(''), '请选择角色') }}
+      </select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-3">联系方式<span class="text-danger">&nbsp;*</span></label>
+    <div class="col-md-8">
+      <input class="form-control input-sm" type="text" name="mobile" value="{{ user.mobile }}" data-validation="{{ path('user_validate_mobile', {exclude: user.mobile}) }}">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-3">邮箱</label>
+    <div class="col-md-8">
+      <input class="form-control input-sm" type="text" name="email" value="{{ user.email }}"
+             data-validation="{{ path('user_validate_email', {exclude: user.email}) }}">
+    </div>
+  </div>
+  
+  {{ form_csrf_token() }}
+</form>
+{% endblock %}
+
+{% block footer %}
+  <button type="button" class="btn btn-default " data-dismiss="modal">关闭</button>
+  <a id="alias-subuser-create-btn" class="btn btn-primary" data-toggle="form-submit"
+     data-target="#alias-subuser-form" data-loading-text="正在提交">
+    保存
+  </a>
+{% endblock %}

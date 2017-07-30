@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- http://phpunit.de/manual/4.1/en/appendixes.configuration.html -->
+<phpunit
+    backupGlobals = "false"
+    backupStaticAttributes = "false"
+    colors = "true"
+    convertErrorsToExceptions = "true"
+    convertNoticesToExceptions = "true"
+    convertWarningsToExceptions = "true"
+    processIsolation = "false"
+    stopOnFailure = "false"
+    syntaxCheck = "false"
+    bootstrap="../bootstrap/bootstrap_test.php"
+>
+    <php>
+        <ini name="error_reporting" value="-1" />
+    </php>
+
+    <testsuites>
+        <testsuite name="Project Test Suite">
+            <directory>../src/AppBundle/Common/Tests</directory>
+            <directory>../tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <!--
+    <php>
+        <server name="KERNEL_DIR" value="/path/to/your/app/" />
+    </php>
+    -->
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">../src/Biz</directory>
+            <exclude>
+                <file>../src/Biz/BaseTestCase.php</file>
+            </exclude>
+            
+            <directory suffix=".php">../src/AppBundle/Common</directory>
+            <exclude>
+                <directory>../src/AppBundle/Common/Tests</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>

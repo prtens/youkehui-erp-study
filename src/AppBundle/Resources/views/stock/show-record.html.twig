@@ -1,0 +1,53 @@
+{% extends 'modal-base.html.twig' %}
+
+{% set modal_class = 'modal-lg' %}
+
+{% block title %}
+  <h4 class="modal-title">
+    库存操作日志
+  </h4>
+{% endblock %}
+
+{% block body %}
+<table id="goods-set-item-table" class="table table-striped table-hover" style="word-break:break-all;">
+  {% if stock_records is not empty %}
+  <thead>
+    <tr>
+      <th width="10%">操作</th>
+      <th width="10%">旧库存</th>
+      <th width="10%">操作量</th>
+      <th width="10%">新库存</th>
+      <th width="12%">本批价格</th>
+      <th width="15%">备注</th>
+      <th width="10%">操作者</th>
+      <th>时间</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for stock_record in stock_records %}
+      <tr>
+        {% set operator = operators[stock_record.operator_id] %}
+        {% set owner = owners[stock_record.owner_id] %}
+        <td>
+          {{ stock_record.type == 'in'?'<i class="fa fa-sign-in"></i> 入库':'' }}
+          {{ stock_record.type == 'out'?'<i class="fa fa-sign-out"></i> 出库':'' }}
+          {{ stock_record.type == 'check'?'<i class="fa fa-refresh"></i> 盘点':'' }}
+          {{ stock_record.type == 'loss'?'<i class="fa fa-minus"></i> 报损':'' }}
+          {{ stock_record.type == 'gain'?'<i class="fa fa-plus"></i> 报溢':'' }}
+        </td>
+        <td>{{ stock_record.old_amount }}</td>
+        <td>{{ stock_record.wave_amount }}</td>
+        <td>{{ stock_record.new_amount }}</td>
+        <td>{{ stock_record.cost_price }}</td>
+        <td>{{ stock_record.remark }}</td>
+        <td>{{ operator ? operator.nickname : '-' }}</td>
+        <td>{{ stock_record.created_time|date("Y-m-d H:i:s") }}</td>
+      </tr>
+      {% endfor %}
+  </tbody>
+  {% else %}
+    <ul class="row empty">暂无库存操作记录</ul>
+  {% endif %}
+</table>
+{{ app_macro.table_paginator(paginator) }}
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'modal-base.html.twig' %}
+
+{% do script(['app/stock-todo/index.js']) %}
+
+{% block title %}
+    待处理列表
+{% endblock %}
+
+{% block body %}
+
+{% if goods_sets %}
+  <table id="goods-table" class="table table-striped table-hover" style="word-break:break-all;">
+    <thead>
+      <tr>
+        <th width="10%">类别</th>
+        <th width="30%">名称</th>
+        <th width="20%">零售价</th>
+        <th width="20%">最大可售数量</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for todo in todos %}
+      <tr>
+        {% set goods_set = goods_sets[todo.target_id] %}
+        <td>套餐</td>
+        <td>{{ goods_set.name }}</td>
+        <td>{{ goods_set.sale_price }}</td>
+        <td>{{ goods_set.max_amount }}</td>
+        <td>
+          <a href="javascript:;" class="btn btn-default btn-sm" data-toggle="item-delete" data-url="{{ path('stock_todo_delete', {id: todo.id}) }}">
+            <i class="glyphicon glyphicon-trash"></i> 删除
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    <tbody>
+  </table>
+
+{% else %}
+  <div class="empty">暂无数据</div>
+{% endif %}
+
+{% endblock %}
+
+{% block footer %}
+{% if todos %}
+  <a class="btn btn-primary btn-sm" data-url="{{ path('goods_set_stock_record_create', {'type': 'in'}) }}" data-role="in" data-toggle="record-create">
+    <i class="fa fa-sign-in"></i> 入库
+  </a>
+  <a class="btn btn-primary btn-sm" data-url="{{ path('goods_set_stock_record_create', {'type': 'out'}) }}" data-role="out" data-toggle="record-create">
+    <i class="fa fa-sign-out"></i> 出库
+  </a>
+{% endif %}
+{% endblock %}

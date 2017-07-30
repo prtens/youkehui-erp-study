@@ -1,0 +1,38 @@
+{% extends 'AppBundle::layout.html.twig' %}
+{% block title %}区域管理 - {{ parent() }}{% endblock %}
+
+{% do script(['app/region/index.js']) %}
+
+{% set main_nav = 'admin_authority' %}
+{% set sub_nav = 'admin_region' %}
+
+{% block header %}
+{% endblock %}
+
+{% block box_title %}
+  区域管理
+{% endblock %}
+
+{% block box_tools %}
+  <a href="javascript:;" class="btn btn-primary btn-sm" data-url="{{ path('admin_region_create') }}" data-toggle="modal" data-target="#modal">
+    <i class="glyphicon glyphicon-plus"></i> 新增区域
+  </a>
+{% endblock %}
+
+{% block box_body %}
+  <div class="nav-tabs-custom">
+    <div class="tab-content">
+      <ul class="list-table" id="region-table" style="margin-bottom: 0">
+        <li class="th">
+          <div class="row">
+            <div class="td col-md-6">名称</div>
+            <div class="td col-md-4">操作</div>
+          </div>
+        </li>
+        <li id="region-table-body" class="tbody">
+        {% include 'AppBundle:admin/region:tbody.html.twig' %}
+        </li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}

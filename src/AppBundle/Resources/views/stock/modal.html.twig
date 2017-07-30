@@ -1,0 +1,52 @@
+{% extends 'modal-base.html.twig' %}
+
+{% do css(['libs/select2.css']) %}
+{% do script(['libs/jquery-validation.js','libs/select2.js', 'libs/jquery-form.js', 'app/stock/modal.js']) %}
+
+{% block title %}
+  <h4 class="modal-title">
+    {% if stock.id == 0 %}
+      加入库存
+    {% else %}
+      编辑库存
+    {% endif %}
+  </h4>
+{% endblock %}
+
+{% block body %}
+<form id="stock-form" class="form-horizontal"
+  {% if stock.id == 0 %}
+    action="{{ path('stock_create') }}"
+  {% else %}
+    action="{{ path('stock_edit', {id:stock.id}) }}"
+  {% endif %}
+  method="post"  enctype="multipart/form-data">
+
+  {% if stock.id == 0 %}
+    <div class="form-group">
+      <label class="control-label col-md-3" >商品<span class="text-danger">&nbsp;*</span></label>
+      <div class="col-md-8">
+        {#<input id="goods-search" name="goods_id" class="form-control input-sm" type="text" placeholder="搜索商品" data-url="{{ path('stock_ajax_goods_search') }}" value="{{ stock.goods_id }}">#}
+        <input name="goods_id" class="form-control input-sm" type="hidden" value="{{ stock.goods_id }}">
+        <input name="name" class="form-control input-sm" type="text" value="{{ stock.name }}" readonly>
+      </div>
+    </div>
+  {% endif %}
+  <div class="form-group">
+    <label class="control-label col-md-3" >下限预警</label>
+    <div class="col-md-8">
+      <input  class="form-control input-sm" type="text" name="min_amount" value="{{ stock.min_amount }}"/>
+    </div>
+  </div>
+
+  {{ form_csrf_token() }}
+</form>
+{% endblock %}
+
+{% block footer %}
+<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">关闭</button>
+<a id="stock-create-btn" class="btn btn-primary btn-sm" data-toggle="form-submit"
+   data-target="#stock-form" data-loading-text="正在提交">
+  保存
+</a>
+{% endblock %}

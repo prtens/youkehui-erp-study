@@ -1,0 +1,95 @@
+{% extends 'AppBundle::layout.html.twig' %}
+{% block title %}子账号管理 - {{ parent() }}{% endblock %}
+
+{% set main_nav = 'setting_manage' %}
+{% set sub_nav = 'user' %}
+
+
+{% do css(['libs/jquery-fancybox.css']) %}
+{% do script(['libs/jquery-fancybox.js', 'app/user/index.js']) %}
+
+{% block header %}
+
+{% endblock %}
+
+{% block box_title %}子账号管理{% endblock %}
+
+{% block box_tools %}
+  {% if app.user.isAdmin() %}
+    <a data-url="{{ path('user_create', {type: 'alias-subuser'}) }}" class="btn btn-primary btn-sm" data-role="add" data-toggle="modal" data-target="#modal">
+      <i class="glyphicon glyphicon-plus"></i> 新增子账户
+    </a>
+  {% endif %}
+{% endblock %}
+
+{% block box_body %}
+<div class="row mbm">
+  <div class="col-md-12">
+    <form id="user-search-form" class="form-inline" method="get">
+      <div class="form-group">
+        <input class="form-control input-sm" name="nickname" type="text" value="{{ app.request.get('nickname') }}" placeholder="子账号名称">
+      </div>
+      <div class="form-group">
+        <input class="form-control input-sm" name="mobile" type="text" value="{{ app.request.get('mobile') }}" placeholder="联系电话">
+      </div>
+      <div class="form-group">
+        <button class="btn btn-primary btn-sm" type="submit">
+          <i class="glyphicon glyphicon-search"></i> 搜索
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <table id="user-table" class="table table-striped table-hover" style="word-break:break-all;">
+      <thead>
+        <tr>
+          <th width="10%">头像</th>
+          <th width="10%">账户</th>
+          <th width="10%">联系方式</th>
+          <th width="10%">邮箱</th>
+          <th width="10%">角色</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td><a href="{{ filepath(user.large_avatar) }}" class="fancybox"><img src="{{ filepath(user.small_avatar) }}" style="height:25px"></a></td>
+          <td>{{ user.nickname }}</td>
+          <td>{{ user.mobile }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            {% for role in user.roles if roles[role].name|default(false) %}
+              <span class="label label-default">{{ roles[role].name|default('无') }}</span>
+            {% endfor %}
+          </td>
+          <td width="15%">
+            {% if user.locked %}
+              <a href="javascript:;" class="btn btn-default btn-sm" data-nickname="{{ user.nickname }}" data-url="{{ path('user_enable' , {id:user.id}) }}" data-toggle="enable">
+                <i class="glyphicon glyphicon-ok-circle"></i> 启用
+              </a>
+            {% else %}
+              <a href="javascript:;" class="btn btn-default btn-sm" data-nickname="{{ user.nickname }}" data-url="{{ path('user_disable' , {id:user.id}) }}" data-toggle="disable">
+                <i class="glyphicon glyphicon-minus-sign"></i> 禁用
+              </a>
+            {% endif %}
+            <a href="javascript:;" class="btn btn-default btn-sm" data-url="{{ path('user_edit' , {id:user.id}) }}" data-role="edit" data-toggle="modal" data-target="#modal">
+              <i class="glyphicon glyphicon-edit"></i> 编辑
+            </a>
+            <a href="javascript:;" class="btn btn-default btn-sm" data-url="{{ path('user_password_change' , {id:user.id}) }}" data-role="password-change" data-toggle="modal" data-target="#modal">
+              <i class="glyphicon glyphicon-edit"></i> 修改密码
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+        {% if users is empty %}
+          <tr><td colspan="7" class="row empty">暂无子账号记录</td></tr>
+        {% endif %}
+      <tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block box_footer %}{{ app_macro.table_paginator(paginator) }}{% endblock %}

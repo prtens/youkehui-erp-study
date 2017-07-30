@@ -1,0 +1,150 @@
+{% extends 'AppBundle::layout.html.twig' %}
+{% block title %}库存管理 - {{ parent() }}{% endblock %}
+
+{% set main_nav = 'stock_manage' %}
+{% set sub_nav = 'stock' %}
+
+{% do css(['libs/select2.css', 'libs/jquery-fancybox.css']) %}
+{% do script(['libs/select2.js', 'libs/jquery-fancybox.js', 'app/stock/index.js', ]) %}
+
+{% block header %}
+
+{% endblock %}
+
+{% block box_title %}库存管理{% endblock %}
+
+{% block box_tools %}
+  <a class="btn btn-default btn-sm" data-url="{{ path('stock_todo_goods') }}" data-toggle="modal" data-target="#modal">
+    待处理列表 <span class="badge">{{ todo_target_ids|length }}</span>
+  </a>
+  {#<a class="btn btn-primary btn-sm" data-url="{{ path('stock_create') }}" data-role="stock-create" data-toggle="modal" data-target="#modal">
+    <i class="glyphicon glyphicon-plus"></i> 添加库存
+  </a>#}
+  <a class="btn btn-primary btn-sm" data-url="{{ path('stock_record_create', {'type': 'in'}) }}" data-role="in" data-toggle="modal" data-target="#modal">
+    <i class="fa fa-sign-in"></i> 入库
+  </a>
+  <a class="btn btn-primary btn-sm" data-url="{{ path('stock_record_create', {'type': 'out'}) }}" data-role="out" data-toggle="modal" data-target="#modal">
+    <i class="fa fa-sign-out"></i> 出库
+  </a>
+  <a class="btn btn-info btn-sm" data-url="{{ path('stock_record_create', {'type': 'gain'}) }}" data-role="gain"  data-toggle="modal" data-target="#modal">
+    <i class="fa fa-plus"></i> 报溢
+  </a>
+  <a class="btn btn-info btn-sm" data-url="{{ path('stock_record_create', {'type': 'loss'}) }}" data-role="loss"  data-toggle="modal" data-target="#modal">
+    <i class="fa fa-minus"></i> 报损
+  </a>
+  <a class="btn btn-success btn-sm" data-url="{{ path('stock_record_create', {'type': 'check'}) }}" data-role="check"  data-toggle="modal" data-target="#modal">
+    <i class="fa fa-refresh"></i> 盘点
+  </a>
+{% endblock %}
+
+{% block box_body %}
+<div class="row mbm">
+  <div class="col-md-12">
+    <form id="stock-search-form" class="form-inline" method="get">
+      <div class="form-group">
+        <input class="form-control input-sm" name="name" type="text" value="{{ app.request.get('name') }}" placeholder="名称">
+      </div>
+      <div class="form-group">
+        <select class="form-control input-sm" name="group_code">
+          {{ select_options({'product': '产品', 'facility': '设备'}, app.request.query.get('group_code'), '全部类别') }}
+        </select>
+      </div>
+      <div class="form-group">
+        <input id="provider-id" class="form-control input-sm" type="text" name="provider_id" value="{{ app.request.get('provider_id') }}" placeholder="搜索供应商" data-url="{{ path('user_ajax_search', {type: 'provider'}) }}" style="width:150px">
+      </div>
+      <div class="form-group">
+        <button class="btn btn-primary btn-sm" type="submit">
+          <i class="glyphicon glyphicon-search"></i> 搜索
+        </button>
+      </div>
+      <div class="form-group">
+        {% if app.request.get('is_warning') == 1 %}
+          <a class="btn btn-primary btn-sm" href="{{ path('stock') }}">查看全部</a>
+        {% else %}
+          <a class="btn btn-primary btn-sm" href="{{ path('stock', {'is_warning': 1}) }}">只看预警</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+</div>
+
+{% if stocks %}
+
+<div class="row">
+  <div class="col-md-12">
+    <table id="stock-table" class="table table-striped table-hover" style="word-break:break-all;">
+      <thead>
+        <tr>
+          <th width="3%">类别</th>
+          <th width="4%">图片</th>
+          <th width="5%">名称</th>
+          <th width="5%">分类</th>
+          <th width="5%">供应商</th>
+          <th width="5%">加盟商</th>
+          <th width="5%">规格</th>
+          <th width="5%">单位</th>
+          <th width="5%">库存数量</th>
+          <th width="5%">库存下限</th>
+          <th width="5%">是否预警</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for stock in stocks %}
+        <tr>
+          {% set goods = goods_list[stock.goods_id] %}
+          {% set category = categories[stock.category_id] %}
+          {% if goods.group_code == 'product' %}
+            {% set provider = providers[stock.provider_id] %}
+          {% endif %}
+          {% set alias = aliases[stock.owner_id] %}
+          <td>{{ dict('group_code',stock.group_code) }}</td>
+          <td><a href="{{ filepath(goods.large_picture) }}" class="fancybox"><img src="{{ filepath(goods.small_picture) }}" style="height:25px"></a></td>
+          <td>
+            <a href="javascript:;" data-url="{{ path('goods_show' , {id:goods.id}) }}" data-role="edit" data-toggle="modal" data-target="#modal">
+            {{ goods.name }}
+            </a>
+          </td>
+          <td>{{ category.name }}</td>
+          <td>{{ provider.nickname|default('-') }}</td>
+          <td>{{ alias.nickname }}</td>
+          <td>{{ goods.spec }}</td>
+          <td>{{ goods.unit }}</td>
+          <td>{{ stock.amount }}</td>
+          <td>{{ stock.min_amount }}</td>
+          <td>{{ stock.is_warning == 1?'<font color="red">是</font>':'否' }}</td>
+          <td width="15%">
+            {% if goods.id in todo_target_ids %}
+            <a href="javascript:;" class="btn btn-default btn-sm disabled">
+              <i class="glyphicon glyphicon-ok"></i>
+              <span>已加入</span>
+            </a>
+            {% else %}
+              <a href="javascript:;" class="btn btn-default btn-sm" data-role="item-todo-add" data-goods-id="{{ goods.id }}" data-url="{{ path('stock_todo_add') }}">
+                <i class="glyphicon glyphicon-edit"></i>
+                <span>加入待处理</span>
+              </a>
+              <a href="javascript:;" class="btn btn-default btn-sm"  data-url="{{ path('stock_edit' , {id: stock.id}) }}" data-role="edit" data-toggle="modal" data-target="#modal">
+                <i class="glyphicon glyphicon-edit"></i>
+                <span>编辑</span>
+              </a>
+            {% endif %}
+            <a href="javascript:;" class="btn btn-default btn-sm"  data-url="{{ path('stock_record_show' , {goodsId: goods.id}) }}" data-role="edit" data-toggle="modal" data-target="#modal">
+              <i class="glyphicon glyphicon-list-alt"></i>
+              <span>库存日志</span>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      <tbody>
+    </table>
+  </div>
+</div>
+
+{% else %}
+<div class="row empty">暂无库存记录</div>
+{% endif %}
+
+{% endblock %}
+
+{% block box_footer %}{{ app_macro.table_paginator(paginator) }}{% endblock %}

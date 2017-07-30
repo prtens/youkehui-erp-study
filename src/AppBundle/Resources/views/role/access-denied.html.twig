@@ -1,0 +1,12 @@
+{% extends 'AppBundle::layout.html.twig' %}
+{% block title %}权限不足 - {{ parent() }}{% endblock %}
+
+{% block box_title %}权限不足{% endblock %}
+
+{% block box_body %}
+  <div class="row">
+    <div class="col-md-12">
+      <h4 class="text-center">您没有使用此功能的权限</h4>
+    </div>
+  </div>
+{% endblock %}

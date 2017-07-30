@@ -1,0 +1,41 @@
+{% if categories is not empty %}
+  {{ _self.show_category_tree(categories, false) }}
+{% else %}
+  <ul class="row empty">暂无分类记录</ul>
+{% endif %}
+
+{% macro show_category_tree(categories, is_collapse_children) %}
+  <ul class="list-table sortable-list" data-group-id="{{ categories[0]['parent_id'] }}">
+    {% for category in categories %}
+      {% set is_parent = category.children|default(null) is not empty %}
+      {% set is_root = category.depth == 1 %}
+      <li id="{{ category.id }}" class="tr" data-name="{{ category.name }}" data-id="{{ category.id }}" data-parent-id="{{ category.parent_id }}" style="display: {{ (not is_root and is_collapse_children) ? 'none' : 'block' }}">
+        <div class="row{{ (is_parent and is_collapse_children) ? ' row-collapse' : ' row-expand' }}">
+          <div class="td col-md-6 name sort-handle" style="padding-left: {{ 24 * (category.depth - 1 ) }}px; overflow: hidden">
+            {% if is_parent %}
+              <i class="list-table-tree-icon glyphicon glyphicon-chevron-{{ is_collapse_children ? 'right' : 'down' }}"></i>
+            {% else %}
+              <i class="list-table-tree-icon"></i>
+            {% endif %}
+            {{ category.name }}
+          </div>
+          <div class="td col-md-4 operation">
+            <a href="javascript:;" class="btn btn-default btn-sm " data-url="{{ path('goods_category_edit', {'id': category.id}) }}" data-toggle="modal" data-target="#modal">
+              <i class="glyphicon glyphicon-edit"></i> 编辑
+            </a>
+            {% if category.depth == 1 %}
+                <a href="javascript:;" class="btn btn-default btn-sm" data-url="{{ path('goods_category_create', {'group_code': category.group_code, 'parent_id': category.id}) }}" data-toggle="modal" data-target="#modal"><i class="glyphicon glyphicon-plus"></i> 新增子分类</a>
+            {% endif %}
+            {% if not is_parent %}
+                <a href="javascript:;" class="btn btn-default btn-sm" data-toggle="item-delete" data-name="{{ category.name }}" data-url="{{ path('goods_category_delete', {'id': category.id}) }}"><i class="glyphicon glyphicon-trash"></i> 删除
+                </a>
+            {% endif %}
+          </div>
+        </div>
+        {% if is_parent %}
+          {{ _self.show_category_tree(category.children, is_collapse_children) }}
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endmacro %}
