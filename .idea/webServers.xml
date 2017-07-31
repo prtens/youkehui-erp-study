@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="a969919d-d119-49ea-853b-96ba01c107ee" name="erp" url="http://192.168.56.102">
+        <fileTransfer host="192.168.56.102" port="22" rootFolder="/var/www/youkehui-erp-study" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
