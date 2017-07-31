@@ -6,4 +6,5 @@ use AppBundle\Controller\BaseController as WebBaseController;
 
 abstract class BaseController extends WebBaseController
 {
+    
 }
